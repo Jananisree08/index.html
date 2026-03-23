@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>my little corner ✧</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #faf8f3; --paper: #fffef9; --ink: #2c2a26; --ink-light: #6b6760;
+    --accent: #c17b4e; --accent2: #7a9e7e; --accent3: #6b7fa3;
+    --line: #e8e4da; --shadow: rgba(44,42,38,0.08);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Lora', serif; background: var(--bg); color: var(--ink); min-height: 100vh; overflow-x: hidden; }
+  body::before {
+    content: ''; position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Ccircle cx='40' cy='40' r='18' fill='none' stroke='%23e0dbd0' stroke-width='1.5'/%3E%3Ccircle cx='40' cy='40' r='8' fill='none' stroke='%23e0dbd0' stroke-width='1'/%3E%3Cpath d='M200 60 Q210 45 220 60 Q230 75 240 60' fill='none' stroke='%23e0dbd0' stroke-width='1.5'/%3E%3Cpath d='M350 120 l8-14 8 14 z' fill='none' stroke='%23e0dbd0' stroke-width='1.5'/%3E%3Crect x='310' y='320' width='28' height='28' rx='4' fill='none' stroke='%23e0dbd0' stroke-width='1.5' transform='rotate(15 324 334)'/%3E%3Ccircle cx='80' cy='350' r='14' fill='none' stroke='%23e0dbd0' stroke-width='1.5' stroke-dasharray='4 3'/%3E%3Cpath d='M160 300 Q170 285 180 300 Q190 315 200 300 Q210 285 220 300' fill='none' stroke='%23e0dbd0' stroke-width='1.5'/%3E%3Cpath d='M20 200 Q28 188 36 200 Q44 212 52 200' fill='none' stroke='%23e0dbd0' stroke-width='1.5'/%3E%3Ccircle cx='370' cy='260' r='10' fill='none' stroke='%23e0dbd0' stroke-width='1' stroke-dasharray='3 2'/%3E%3Cpath d='M100 120 l5-10 5 10-5-3z' fill='none' stroke='%23e0dbd0' stroke-width='1.5'/%3E%3Cpath d='M280 380 Q290 365 300 380' fill='none' stroke='%23e0dbd0' stroke-width='1.5'/%3E%3C/svg%3E");
+    background-repeat: repeat; background-size: 400px 400px; opacity: 0.6; pointer-events: none; z-index: 0;
+  }
+
+  /* LOCK */
+  #lock-screen { position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--bg);z-index:100;gap:20px; }
+  .lock-doodle { font-size:52px;animation:float 3s ease-in-out infinite; }
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+  .lock-title { font-family:'Caveat',cursive;font-size:2.2rem;font-weight:700;color:var(--ink); }
+  .lock-subtitle { font-family:'Caveat',cursive;font-size:1.1rem;color:var(--ink-light); }
+  .lock-box { background:var(--paper);border:1.5px solid var(--line);border-radius:16px;padding:36px 40px;display:flex;flex-direction:column;gap:16px;align-items:center;box-shadow:0 4px 24px var(--shadow);position:relative; }
+  .lock-box::before { content:'✦';position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--bg);padding:0 8px;color:var(--accent);font-size:18px; }
+  .pw-input { font-family:'Caveat',cursive;font-size:1.3rem;padding:10px 18px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);outline:none;width:240px;text-align:center;letter-spacing:0.1em;transition:border-color .2s; }
+  .pw-input:focus { border-color:var(--accent); }
+  .pw-btn { font-family:'Caveat',cursive;font-size:1.1rem;padding:10px 32px;background:var(--ink);color:var(--bg);border:none;border-radius:10px;cursor:pointer;transition:background .2s,transform .1s; }
+  .pw-btn:hover{background:var(--accent)} .pw-btn:active{transform:scale(.97)}
+  .pw-error { font-family:'Caveat',cursive;color:#c0392b;font-size:1rem;display:none; }
+  .pw-hint { font-family:'Caveat',cursive;font-size:.95rem;color:var(--ink-light);text-align:center; }
+
+  /* APP */
+  #app{display:none;position:relative;z-index:1;padding:40px 24px 80px;max-width:1100px;margin:0 auto}
+  .site-header{text-align:center;margin-bottom:48px;position:relative}
+  .site-title{font-family:'Caveat',cursive;font-size:3rem;font-weight:700;color:var(--ink);line-height:1}
+  .site-date{font-family:'Caveat',cursive;font-size:1.1rem;color:var(--ink-light);margin-top:6px}
+  .header-doodles{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:100%;pointer-events:none;display:flex;justify-content:space-between;padding:0 60px}
+  .doodle-char{font-size:28px;opacity:.35;display:block}
+
+  /* TABS */
+  .tabs{display:flex;gap:8px;justify-content:center;margin-bottom:32px;flex-wrap:wrap}
+  .tab-btn{font-family:'Caveat',cursive;font-size:1.15rem;padding:8px 22px;border:1.5px solid var(--line);border-radius:100px;background:var(--paper);color:var(--ink-light);cursor:pointer;transition:all .2s}
+  .tab-btn:hover{border-color:var(--ink-light);color:var(--ink)}
+  .tab-btn.active{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+  .set-pw-btn{font-family:'Caveat',cursive;font-size:.9rem;padding:6px 14px;background:none;border:1.5px solid var(--line);border-radius:100px;color:var(--ink-light);cursor:pointer;transition:all .2s}
+  .set-pw-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+  /* SECTIONS */
+  .section-card{background:var(--paper);border:1.5px solid var(--line);border-radius:20px;padding:32px;box-shadow:0 2px 16px var(--shadow);display:none;animation:fadeUp .3s ease}
+  .section-card.active{display:block}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+  .section-heading{font-family:'Caveat',cursive;font-size:1.9rem;font-weight:700;margin-bottom:24px;display:flex;align-items:center;gap:10px}
+
+  /* TODO */
+  .todo-input-row{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+  .todo-input{flex:1;font-family:'Lora',serif;font-size:.95rem;padding:10px 16px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);outline:none;min-width:180px;transition:border-color .2s}
+  .todo-input:focus{border-color:var(--accent)}
+  select.todo-input{flex:0 0 auto;width:130px;cursor:pointer}
+  .add-btn{font-family:'Caveat',cursive;font-size:1.1rem;padding:10px 22px;background:var(--ink);color:var(--bg);border:none;border-radius:10px;cursor:pointer;transition:background .2s;white-space:nowrap}
+  .add-btn:hover{background:var(--accent)}
+  .todo-filters{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+  .filter-btn{font-family:'Caveat',cursive;font-size:1rem;padding:5px 14px;border:1.5px solid var(--line);border-radius:100px;background:transparent;color:var(--ink-light);cursor:pointer;transition:all .2s}
+  .filter-btn.active,.filter-btn:hover{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+  .todo-list{list-style:none;display:flex;flex-direction:column;gap:8px}
+  .todo-item{display:flex;align-items:center;gap:12px;padding:12px 16px;border:1.5px solid var(--line);border-radius:12px;background:var(--bg);transition:border-color .2s,background .3s;position:relative}
+  .todo-item:hover{border-color:#d0ccc0}
+  .todo-item.done{opacity:.55}
+  .todo-item.done-flash{background:#edfaed !important;border-color:var(--accent2) !important}
+  .todo-check{width:22px;height:22px;border:2px solid var(--line);border-radius:50%;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;background:var(--paper);font-size:12px;user-select:none}
+  .todo-check:hover{border-color:var(--accent2)}
+  .todo-item.done .todo-check{background:var(--accent2);border-color:var(--accent2);color:white}
+  .todo-text{flex:1;font-size:.95rem;line-height:1.4}
+  .todo-item.done .todo-text{text-decoration:line-through;color:var(--ink-light)}
+  .priority-tag{font-family:'Caveat',cursive;font-size:.85rem;padding:2px 10px;border-radius:100px;flex-shrink:0}
+  .p-high{background:#fde8e8;color:#c0392b}.p-med{background:#fef3e2;color:#d4820a}.p-low{background:#e8f5e9;color:#2e7d32}
+  .del-btn{background:none;border:none;color:var(--ink-light);cursor:pointer;font-size:16px;padding:4px;border-radius:6px;transition:color .2s;line-height:1}
+  .del-btn:hover{color:#c0392b}
+  .todo-empty{text-align:center;padding:40px;color:var(--ink-light);font-family:'Caveat',cursive;font-size:1.2rem}
+
+  /* TIMETABLE */
+  .tt-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:24px}
+  .tt-input{font-family:'Lora',serif;font-size:.9rem;padding:9px 14px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);outline:none;transition:border-color .2s;width:100%}
+  .tt-input:focus{border-color:var(--accent3)}
+  .tt-table-wrap{overflow-x:auto}
+  table{width:100%;border-collapse:collapse;font-size:.9rem}
+  thead tr{border-bottom:2px solid var(--ink)}
+  th{font-family:'Caveat',cursive;font-size:1.05rem;font-weight:600;padding:10px 14px;text-align:left;color:var(--ink-light)}
+  td{padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:middle}
+  tbody tr:hover{background:var(--bg)}
+  .subject-pill{display:inline-block;padding:3px 12px;border-radius:100px;font-family:'Caveat',cursive;font-size:1rem;font-weight:600}
+  .tt-del{background:none;border:none;color:var(--ink-light);cursor:pointer;font-size:15px;transition:color .2s}
+  .tt-del:hover{color:#c0392b}
+  .tt-empty{text-align:center;padding:32px;color:var(--ink-light);font-family:'Caveat',cursive;font-size:1.1rem}
+  .pill-0{background:#fde8e8;color:#c0392b}.pill-1{background:#e8f0fe;color:#3c6bc9}
+  .pill-2{background:#fef3e2;color:#c07a0a}.pill-3{background:#f0e8fe;color:#7b4fc9}
+  .pill-4{background:#e8fae8;color:#2e7d32}.pill-5{background:#fef8e0;color:#b4860a}
+
+  /* JOURNAL */
+  .journal-date-row{display:flex;gap:10px;align-items:center;margin-bottom:16px;flex-wrap:wrap}
+  .journal-date-label{font-family:'Caveat',cursive;font-size:1.1rem;color:var(--ink-light)}
+  .journal-date-input{font-family:'Lora',serif;font-size:.9rem;padding:7px 12px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);outline:none;transition:border-color .2s}
+  .journal-date-input:focus{border-color:var(--accent)}
+  .journal-mood{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+  .mood-btn{font-size:22px;background:none;border:1.5px solid var(--line);border-radius:10px;padding:5px 10px;cursor:pointer;transition:all .15s}
+  .mood-btn:hover,.mood-btn.selected{background:var(--bg);border-color:var(--accent);transform:scale(1.1)}
+  .journal-textarea{width:100%;min-height:180px;font-family:'Lora',serif;font-size:.95rem;line-height:1.8;padding:16px;border:1.5px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);outline:none;resize:vertical;transition:border-color .2s;background-image:repeating-linear-gradient(transparent,transparent 27px,#eae7df 27px,#eae7df 28px);background-position:0 14px}
+  .journal-textarea:focus{border-color:var(--accent)}
+  .journal-actions{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+  .save-btn{font-family:'Caveat',cursive;font-size:1.1rem;padding:9px 24px;background:var(--ink);color:var(--bg);border:none;border-radius:10px;cursor:pointer;transition:background .2s}
+  .save-btn:hover{background:var(--accent)}
+  .clear-btn{font-family:'Caveat',cursive;font-size:1.1rem;padding:9px 20px;background:none;color:var(--ink-light);border:1.5px solid var(--line);border-radius:10px;cursor:pointer;transition:all .2s}
+  .clear-btn:hover{border-color:var(--ink);color:var(--ink)}
+  .journal-entries{margin-top:28px;display:flex;flex-direction:column;gap:16px}
+  .journal-entry-card{background:var(--bg);border:1.5px solid var(--line);border-radius:14px;padding:18px 20px;position:relative}
+  .entry-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:10px}
+  .entry-date-label{font-family:'Caveat',cursive;font-size:1.05rem;color:var(--ink-light)}
+  .entry-mood-display{font-size:20px}
+  .entry-text{font-size:.92rem;line-height:1.7;white-space:pre-wrap;color:var(--ink)}
+  .entry-del{position:absolute;top:14px;right:14px;background:none;border:none;color:var(--line);cursor:pointer;font-size:15px;transition:color .2s}
+  .entry-del:hover{color:#c0392b}
+
+  /* MODAL */
+  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(44,42,38,.4);z-index:200;align-items:center;justify-content:center}
+  .modal-overlay.open{display:flex}
+  .modal{background:var(--paper);border:1.5px solid var(--line);border-radius:18px;padding:32px;max-width:380px;width:90%;display:flex;flex-direction:column;gap:14px;box-shadow:0 8px 40px rgba(44,42,38,.15);animation:fadeUp .3s ease}
+  .modal-title{font-family:'Caveat',cursive;font-size:1.6rem;font-weight:700}
+  .success-msg{font-family:'Caveat',cursive;font-size:1rem;color:var(--accent2);display:none}
+  .logout-btn{position:fixed;bottom:24px;right:24px;font-family:'Caveat',cursive;font-size:1rem;padding:8px 18px;background:var(--paper);border:1.5px solid var(--line);border-radius:100px;color:var(--ink-light);cursor:pointer;transition:all .2s;z-index:10;box-shadow:0 2px 8px var(--shadow)}
+  .logout-btn:hover{border-color:var(--ink);color:var(--ink)}
+
+  /* CELEBRATION */
+  #celebrate-layer{position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden}
+  .conf{position:absolute;border-radius:2px;animation:conf-fall linear forwards}
+  @keyframes conf-fall{0%{opacity:1;transform:translateY(0) rotate(0deg) scale(1)}85%{opacity:1}100%{opacity:0;transform:translateY(110vh) rotate(800deg) scale(.3)}}
+  .dancer{position:absolute;bottom:-110px;animation:dance-up ease-out forwards;transform-origin:bottom center}
+  @keyframes dance-up{
+    0%  {bottom:-100px;transform:scale(.4) rotate(-12deg);opacity:0}
+    18% {bottom:18vh;transform:scale(1.15) rotate(9deg);opacity:1}
+    32% {bottom:24vh;transform:scale(1) rotate(-7deg)}
+    48% {bottom:20vh;transform:scale(1.08) rotate(6deg)}
+    62% {bottom:22vh;transform:scale(1) rotate(-4deg)}
+    78% {bottom:21vh;transform:scale(1.02) rotate(3deg);opacity:1}
+    100%{bottom:-110px;transform:scale(.2) rotate(0deg);opacity:0}
+  }
+  .yay-pop{position:absolute;font-family:'Caveat',cursive;font-size:2.2rem;font-weight:700;color:var(--accent);pointer-events:none;animation:yay 1.5s ease forwards;white-space:nowrap;text-shadow:0 2px 10px rgba(0,0,0,.12)}
+  @keyframes yay{0%{transform:scale(0) rotate(-18deg);opacity:0}28%{transform:scale(1.4) rotate(6deg);opacity:1}55%{transform:scale(1) rotate(-3deg);opacity:1}100%{transform:scale(.7) rotate(0deg);opacity:0}}
+
+  @media(max-width:600px){.site-title{font-size:2.2rem}.section-card{padding:20px}.header-doodles{display:none}}
+</style>
+</head>
+<body>
+
+<!-- LOCK SCREEN -->
+<div id="lock-screen">
+  <div class="lock-doodle">🔒</div>
+  <div class="lock-title">my little corner</div>
+  <div class="lock-subtitle">enter your password to continue ✦</div>
+  <div class="lock-box">
+    <input type="password" class="pw-input" id="pw-input" placeholder="password" autocomplete="off">
+    <button class="pw-btn" onclick="tryUnlock()">unlock →</button>
+    <div class="pw-error" id="pw-error">wrong password, try again ✗</div>
+    <div class="pw-hint" id="pw-hint">default password: <b>myspace</b><br>change it after logging in!</div>
+  </div>
+</div>
+
+<!-- CELEBRATION LAYER -->
+<div id="celebrate-layer"></div>
+
+<!-- MAIN APP -->
+<div id="app">
+  <header class="site-header">
+    <div class="header-doodles">
+      <span class="doodle-char">✦</span><span class="doodle-char">◌</span>
+      <span class="doodle-char">✧</span><span class="doodle-char">△</span><span class="doodle-char">✦</span>
+    </div>
+    <div class="site-title">my little corner ✧</div>
+    <div class="site-date" id="header-date"></div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab-btn active" onclick="switchTab('todo',this)">✓ to-do</button>
+    <button class="tab-btn" onclick="switchTab('timetable',this)">◷ timetable</button>
+    <button class="tab-btn" onclick="switchTab('journal',this)">✎ journal</button>
+    <button class="set-pw-btn" onclick="openPwModal()">⚙ change password</button>
+  </nav>
+
+  <!-- TO-DO SECTION -->
+  <section class="section-card active" id="sec-todo">
+    <div class="section-heading">✓ &nbsp;to-do list</div>
+    <div class="todo-input-row">
+      <input type="text" class="todo-input" id="todo-text" placeholder="add a task…" onkeydown="if(event.key==='Enter')addTodo()">
+      <select class="todo-input" id="todo-priority">
+        <option value="high">🔴 high</option>
+        <option value="med" selected>🟡 medium</option>
+        <option value="low">🟢 low</option>
+      </select>
+      <button class="add-btn" onclick="addTodo()">+ add</button>
+    </div>
+    <div class="todo-filters">
+      <button class="filter-btn active" onclick="setFilter('all',this)">all</button>
+      <button class="filter-btn" onclick="setFilter('pending',this)">pending</button>
+      <button class="filter-btn" onclick="setFilter('done',this)">done</button>
+    </div>
+    <ul class="todo-list" id="todo-list"></ul>
+    <div class="todo-empty" id="todo-empty" style="display:none">no tasks yet — add one above ✦</div>
+  </section>
+
+  <!-- TIMETABLE SECTION -->
+  <section class="section-card" id="sec-timetable">
+    <div class="section-heading">◷ &nbsp;exam timetable</div>
+    <div class="tt-form">
+      <input type="text"  class="tt-input" id="tt-subject" placeholder="subject">
+      <input type="date"  class="tt-input" id="tt-date">
+      <input type="time"  class="tt-input" id="tt-time">
+      <input type="text"  class="tt-input" id="tt-venue" placeholder="venue / room">
+      <button class="add-btn" onclick="addExam()">+ add exam</button>
+    </div>
+    <div class="tt-table-wrap">
+      <table>
+        <thead><tr><th>subject</th><th>date</th><th>time</th><th>venue</th><th></th></tr></thead>
+        <tbody id="tt-body"></tbody>
+      </table>
+      <div class="tt-empty" id="tt-empty">no exams added yet — stay on top of it! ✦</div>
+    </div>
+  </section>
+
+  <!-- JOURNAL SECTION -->
+  <section class="section-card" id="sec-journal">
+    <div class="section-heading">✎ &nbsp;daily journal</div>
+    <div class="journal-date-row">
+      <span class="journal-date-label">date:</span>
+      <input type="date" class="journal-date-input" id="journal-date">
+    </div>
+    <div style="margin-bottom:10px">
+      <div class="journal-date-label" style="margin-bottom:8px">how are you feeling?</div>
+      <div class="journal-mood">
+        <button class="mood-btn" data-mood="😊" onclick="selectMood(this)">😊</button>
+        <button class="mood-btn" data-mood="😌" onclick="selectMood(this)">😌</button>
+        <button class="mood-btn" data-mood="😔" onclick="selectMood(this)">😔</button>
+        <button class="mood-btn" data-mood="😤" onclick="selectMood(this)">😤</button>
+        <button class="mood-btn" data-mood="😴" onclick="selectMood(this)">😴</button>
+        <button class="mood-btn" data-mood="🤩" onclick="selectMood(this)">🤩</button>
+        <button class="mood-btn" data-mood="😰" onclick="selectMood(this)">😰</button>
+      </div>
+    </div>
+    <textarea class="journal-textarea" id="journal-text" placeholder="write about your day… ✧"></textarea>
+    <div class="journal-actions">
+      <button class="save-btn" onclick="saveEntry()">save entry ↓</button>
+      <button class="clear-btn" onclick="clearJournal()">clear</button>
+    </div>
+    <div class="journal-entries" id="journal-entries"></div>
+  </section>
+
+  <button class="logout-btn" onclick="logout()">↩ lock</button>
+</div>
+
+<!-- CHANGE PASSWORD MODAL -->
+<div class="modal-overlay" id="pw-modal">
+  <div class="modal">
+    <div class="modal-title">change password ⚙</div>
+    <input type="password" class="pw-input" id="new-pw" placeholder="new password" style="width:100%">
+    <input type="password" class="pw-input" id="confirm-pw" placeholder="confirm password" style="width:100%">
+    <div class="pw-error" id="modal-error">passwords don't match!</div>
+    <div class="success-msg" id="modal-success">password changed ✓</div>
+    <div style="display:flex;gap:10px">
+      <button class="save-btn" onclick="changePassword()">save</button>
+      <button class="clear-btn" onclick="closePwModal()">cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* =============================================
+   DANCING CARTOON SVGs
+============================================= */
+const DANCERS = [
+  // 1 — yellow star creature, arms up
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" width="80" height="80">
+    <ellipse cx="40" cy="50" rx="14" ry="17" fill="#FFD166" stroke="#2c2a26" stroke-width="2.2"/>
+    <circle cx="40" cy="25" r="13" fill="#FFD166" stroke="#2c2a26" stroke-width="2.2"/>
+    <circle cx="35" cy="23" r="2.5" fill="#2c2a26"/>
+    <circle cx="45" cy="23" r="2.5" fill="#2c2a26"/>
+    <circle cx="35.8" cy="22.2" r="0.9" fill="white"/>
+    <circle cx="45.8" cy="22.2" r="0.9" fill="white"/>
+    <path d="M35 29 Q40 34 45 29" fill="none" stroke="#2c2a26" stroke-width="2" stroke-linecap="round"/>
+    <line x1="26" y1="44" x2="10" y2="28" stroke="#2c2a26" stroke-width="2.5" stroke-linecap="round"/>
+    <circle cx="10" cy="28" r="4.5" fill="#FFD166" stroke="#2c2a26" stroke-width="2"/>
+    <line x1="54" y1="44" x2="70" y2="28" stroke="#2c2a26" stroke-width="2.5" stroke-linecap="round"/>
+    <circle cx="70" cy="28" r="4.5" fill="#FFD166" stroke="#2c2a26" stroke-width="2"/>
+    <line x1="33" y1="66" x2="27" y2="76" stroke="#2c2a26" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="47" y1="66" x2="53" y2="76" stroke="#2c2a26" stroke-width="2.5" stroke-linecap="round"/>
+    <ellipse cx="26" cy="77" rx="7" ry="3.5" fill="#c17b4e" stroke="#2c2a26" stroke-width="1.8"/>
+    <ellipse cx="54" cy="77" rx="7" ry="3.5" fill="#c17b4e" stroke="#2c2a26" stroke-width="1.8"/>
+    <text x="2" y="16" font-size="11" fill="#f6c94e">✦</text>
+    <text x="63" y="13" font-size="11" fill="#f6c94e">✦</text>
+  </svg>`,
+
+  // 2 — purple wiggly cat
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" width="80" height="80">
+    <ellipse cx="40" cy="52" rx="15" ry="16" fill="#a78bfa" stroke="#2c2a26" stroke-width="2.2"/>
+    <circle cx="40" cy="27" r="14" fill="#a78bfa" stroke="#2c2a26" stroke-width="2.2"/>
+    <polygon points="27,17 23,5 33,13" fill="#a78bfa" stroke="#2c2a26" stroke-width="2"/>
+    <polygon points="53,17 57,5 47,13" fill="#a78bfa" stroke="#2c2a26" stroke-width="2"/>
+    <polygon points="28,15 25,8 32,13" fill="#ffb3c1"/>
+    <polygon points="52,15 55,8 48,13" fill="#ffb3c1"/>
+    <path d="M33 25 Q36 21 39 25" fill="none" stroke="#2c2a26" stroke-width="2.2" stroke-linecap="round"/>
+    <path d="M41 25 Q44 21 47 25" fill="none" stroke="#2c2a26" stroke-width="2.2" stroke-linecap="round"/>
+    <ellipse cx="40" cy="29" rx="2" ry="1.4" fill="#2c2a26"/>
+    <path d="M38 31 Q40 35 42 31" fill="none" stroke="#2c2a26" stroke-width="1.8" stroke-linecap="round"/>
+    <line x1="26" y1="28" x2="37" y2="29" stroke="#2c2a26" stroke-width="1.2"/>
+    <line x1="26" y1="31" x2="37" y2="31" stroke="#2c2a26" stroke-width="1.2"/>
+    <line x1="43" y1="29" x2="54" y2="28" stroke="#2c2a26" stroke-width="1.2"/>
+    <line x1="43" y1="31" x2="54" y2="31" stroke="#2c2a26" stroke-width="1.2"/>
+    <line x1="25" y1="47" x2="9" y2="37" stroke="#2c2a26" stroke-width="2.5" stroke-linecap="round"/>
+    <circle cx="9" cy="37" r="4" fill="#a78bfa" stroke="#2c2a26" stroke-width="2"/>
+    <line x1="55" y1="47" x2="71" y2="37" stroke="#2c2a26" stroke-width="2.5" stroke-linecap="round"/>
+    <circle cx="71" cy="37" r="4" fill="#a78bfa" stroke="#2c2a26" stroke-width="2"/>
+    <line x1="33" y1="67" x2="28" y2="76" stroke="#2c2a26" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="47" y1="67" x2="52" y2="76" stroke="#2c2a26" stroke-width="2.5" stroke-linecap="round"/>
+    <ellipse cx="27" cy="77" rx="6.5" ry="3" fill="#7b4fc9" stroke="#2c2a26" stroke-width="1.8"/>
+    <ellipse cx="53" cy="77" rx="6.5" ry="3" fill="#7b4fc9" stroke="#2c2a26" stroke-width="1.8"/>
+    <path d="M55 58 Q72 52 68 42" fill="none" stroke="#2c2a26" stroke-width="2.5" stroke-linecap="round"/>
+    <text x="57" y="19" font-size="15" fill="#f6c94e">♪</text>
+  </svg>`,
+
+  // 3 — chubby pink bunny
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" width="80" height="80">
+    <ellipse cx="40" cy="54" rx="16" ry="15" fill="#f8c8d4" stroke="#2c2a26" stroke-width="2.2"/>
+    <circle cx="40" cy="29" r="14" fill="#f8c8d4" stroke="#2c2a26" stroke-width="2.2"/>
+    <ellipse cx="31" cy="12" rx="5" ry="11" fill="#f8c8d4" stroke="#2c2a26" stroke-width="2"/>
+    <ellipse cx="49" cy="12" rx="5" ry="11" fill="#f8c8d4" stroke="#2c2a26" stroke-width="2"/>
+    <ellipse cx="31" cy="12" rx="2.5" ry="8" fill="#ffb3c1"/>
+    <ellipse cx="49" cy="12" rx="2.5" ry="8" fill="#ffb3c1"/>
+    <circle cx="35" cy="27" r="3" fill="#2c2a26"/>
+    <circle cx="45" cy="27" r="3" fill="#2c2a26"/>
+    <circle cx="36" cy="26" r="1" fill="white"/>
+    <circle cx="46" cy="26" r="1" fill="white"/>
+    <ellipse cx="32" cy="32" rx="4" ry="2.5" fill="#ffb3c1" opacity="0.6"/>
+    <ellipse cx="48" cy="32" rx="4" ry="2.5" fill="#ffb3c1" opacity="0.6"/>
+    <ellipse cx="40" cy="32" rx="2" ry="1.5" fill="#c17b4e"/>
+    <path d="M35 35 Q40 41 45 35" fill="none" stroke="#2c2a26" stroke-width="2" stroke-linecap="round"/>
+    <line x1="24" y1="51" x2="8" y2="44" stroke="#2c2a26" stroke-width="2.5" stroke-linecap="round"/>
+    <circle cx="8" cy="44" r="4" fill="#f8c8d4" stroke="#2c2a26" stroke-width="2"/>
+    <line x1="56" y1="51" x2="72" y2="44" stroke="#2c2a26" stroke-width="2.5" stroke-linecap="round"/>
+    <circle cx="72" cy="44" r="4" fill="#f8c8d4" stroke="#2c2a26" stroke-width="2"/>
+    <line x1="33" y1="68" x2="26" y2="76" stroke="#2c2a26" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="47" y1="68" x2="54" y2="76" stroke="#2c2a26" stroke-width="2.5" stroke-linecap="round"/>
+    <ellipse cx="25" cy="77" rx="7" ry="3" fill="#e88fa0" stroke="#2c2a26" stroke-width="1.8"/>
+    <ellipse cx="55" cy="77" rx="7" ry="3" fill="#e88fa0" stroke="#2c2a26" stroke-width="1.8"/>
+    <circle cx="57" cy="58" r="5" fill="white" stroke="#2c2a26" stroke-width="1.8"/>
+    <text x="2" y="22" font-size="12" fill="#f6c94e">★</text>
+    <text x="63" y="19" font-size="12" fill="#7a9e7e">★</text>
+  </svg>`,
+
+  // 4 — green robot cheering
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" width="80" height="80">
+    <rect x="23" y="40" width="34" height="29" rx="5" fill="#7a9e7e" stroke="#2c2a26" stroke-width="2.2"/>
+    <rect x="30" y="46" width="20" height="14" rx="3" fill="#e8f5e9" stroke="#2c2a26" stroke-width="1.5"/>
+    <text x="34" y="57" font-size="10" fill="#2e7d32">:D</text>
+    <rect x="35" y="33" width="10" height="9" rx="2" fill="#7a9e7e" stroke="#2c2a26" stroke-width="2"/>
+    <rect x="20" y="12" width="40" height="23" rx="7" fill="#7a9e7e" stroke="#2c2a26" stroke-width="2.2"/>
+    <line x1="40" y1="12" x2="40" y2="4" stroke="#2c2a26" stroke-width="2" stroke-linecap="round"/>
+    <circle cx="40" cy="3" r="3" fill="#f6c94e" stroke="#2c2a26" stroke-width="1.5"/>
+    <rect x="26" y="17" width="11" height="8" rx="2" fill="#e8f5e9" stroke="#2c2a26" stroke-width="1.5"/>
+    <rect x="43" y="17" width="11" height="8" rx="2" fill="#e8f5e9" stroke="#2c2a26" stroke-width="1.5"/>
+    <circle cx="31.5" cy="21" r="2.5" fill="#2e7d32"/>
+    <circle cx="48.5" cy="21" r="2.5" fill="#2e7d32"/>
+    <line x1="28" y1="30" x2="52" y2="30" stroke="#2c2a26" stroke-width="1.5"/>
+    <line x1="32" y1="27" x2="32" y2="33" stroke="#2c2a26" stroke-width="1.2"/>
+    <line x1="40" y1="27" x2="40" y2="33" stroke="#2c2a26" stroke-width="1.2"/>
+    <line x1="48" y1="27" x2="48" y2="33" stroke="#2c2a26" stroke-width="1.2"/>
+    <line x1="23" y1="48" x2="8" y2="34" stroke="#2c2a26" stroke-width="2.5" stroke-linecap="round"/>
+    <rect x="3" y="29" width="9" height="7" rx="2" fill="#7a9e7e" stroke="#2c2a26" stroke-width="2"/>
+    <line x1="57" y1="48" x2="72" y2="34" stroke="#2c2a26" stroke-width="2.5" stroke-linecap="round"/>
+    <rect x="68" y="29" width="9" height="7" rx="2" fill="#7a9e7e" stroke="#2c2a26" stroke-width="2"/>
+    <rect x="28" y="69" width="9" height="8" rx="2" fill="#7a9e7e" stroke="#2c2a26" stroke-width="2"/>
+    <rect x="43" y="69" width="9" height="8" rx="2" fill="#7a9e7e" stroke="#2c2a26" stroke-width="2"/>
+    <text x="58" y="14" font-size="13" fill="#f6c94e">✦</text>
+    <text x="3" y="20" font-size="11" fill="#f6c94e">✦</text>
+  </svg>`,
+
+  // 5 — flower creature with leaf arms
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" width="80" height="80">
+    <circle cx="40" cy="14" r="7" fill="#f6c94e" stroke="#2c2a26" stroke-width="1.8"/>
+    <circle cx="55" cy="20" r="7" fill="#f6c94e" stroke="#2c2a26" stroke-width="1.8"/>
+    <circle cx="61" cy="34" r="7" fill="#f6c94e" stroke="#2c2a26" stroke-width="1.8"/>
+    <circle cx="25" cy="20" r="7" fill="#f6c94e" stroke="#2c2a26" stroke-width="1.8"/>
+    <circle cx="19" cy="34" r="7" fill="#f6c94e" stroke="#2c2a26" stroke-width="1.8"/>
+    <circle cx="40" cy="30" r="15" fill="#ffb3c1" stroke="#2c2a26" stroke-width="2.2"/>
+    <circle cx="35" cy="27" r="3" fill="#2c2a26"/>
+    <circle cx="45" cy="27" r="3" fill="#2c2a26"/>
+    <circle cx="36" cy="26" r="1" fill="white"/>
+    <circle cx="46" cy="26" r="1" fill="white"/>
+    <ellipse cx="31" cy="33" rx="4" ry="2.5" fill="#ff8fab" opacity="0.5"/>
+    <ellipse cx="49" cy="33" rx="4" ry="2.5" fill="#ff8fab" opacity="0.5"/>
+    <path d="M33 34 Q40 41 47 34" fill="none" stroke="#2c2a26" stroke-width="2.2" stroke-linecap="round"/>
+    <line x1="40" y1="45" x2="40" y2="68" stroke="#2c2a26" stroke-width="3" stroke-linecap="round"/>
+    <ellipse cx="24" cy="52" rx="10" ry="5" fill="#7a9e7e" stroke="#2c2a26" stroke-width="2" transform="rotate(-30 24 52)"/>
+    <ellipse cx="56" cy="52" rx="10" ry="5" fill="#7a9e7e" stroke="#2c2a26" stroke-width="2" transform="rotate(30 56 52)"/>
+    <ellipse cx="35" cy="72" rx="6" ry="3.5" fill="#ffb3c1" stroke="#2c2a26" stroke-width="2"/>
+    <ellipse cx="46" cy="72" rx="6" ry="3.5" fill="#ffb3c1" stroke="#2c2a26" stroke-width="2"/>
+    <text x="58" y="17" font-size="13" fill="#c17b4e">♫</text>
+  </svg>`,
+
+  // 6 — friendly ghost
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" width="80" height="80">
+    <ellipse cx="40" cy="43" rx="26" ry="28" fill="#e0e8ff" opacity="0.35"/>
+    <path d="M16 43 Q16 18 40 16 Q64 18 64 43 L64 69 Q56 63 48 69 Q44 73 40 69 Q36 73 32 69 Q24 63 16 69 Z" fill="white" stroke="#2c2a26" stroke-width="2.2"/>
+    <ellipse cx="33" cy="38" rx="5" ry="6" fill="#2c2a26"/>
+    <ellipse cx="47" cy="38" rx="5" ry="6" fill="#2c2a26"/>
+    <circle cx="34.5" cy="36" r="1.8" fill="white"/>
+    <circle cx="48.5" cy="36" r="1.8" fill="white"/>
+    <path d="M32 51 Q40 58 48 51" fill="none" stroke="#2c2a26" stroke-width="2.2" stroke-linecap="round"/>
+    <ellipse cx="28" cy="49" rx="5" ry="3" fill="#ffb3c1" opacity="0.5"/>
+    <ellipse cx="52" cy="49" rx="5" ry="3" fill="#ffb3c1" opacity="0.5"/>
+    <path d="M16 47 Q6 41 8 33" fill="none" stroke="#2c2a26" stroke-width="2.2" stroke-linecap="round"/>
+    <circle cx="8" cy="32" r="4" fill="white" stroke="#2c2a26" stroke-width="2"/>
+    <path d="M64 47 Q74 41 72 33" fill="none" stroke="#2c2a26" stroke-width="2.2" stroke-linecap="round"/>
+    <circle cx="72" cy="32" r="4" fill="white" stroke="#2c2a26" stroke-width="2"/>
+    <text x="2" y="18" font-size="13" fill="#6b7fa3">✧</text>
+    <text x="62" y="15" font-size="13" fill="#6b7fa3">✧</text>
+    <text x="31" y="10" font-size="12" fill="#f6c94e">✦</text>
+  </svg>`
+];
+
+const YAY_WORDS  = ['yay! ✓','done! 🎉','woohoo!','nailed it!','awesome! ✦','yasss! 🌟','great job! ✧'];
+const CONF_COLORS = ['#f6c94e','#c17b4e','#7a9e7e','#6b7fa3','#ffb3c1','#a78bfa','#ff8fab','#4ecdc4'];
+
+/* ─── CELEBRATE ─── */
+function celebrate(triggerEl) {
+  const layer = document.getElementById('celebrate-layer');
+  const rect  = triggerEl ? triggerEl.getBoundingClientRect() : {left:window.innerWidth/2,top:window.innerHeight/2,width:0,height:0};
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top  + rect.height / 2;
+
+  // 1. confetti
+  for (let i = 0; i < 32; i++) {
+    const c    = document.createElement('div');
+    c.className = 'conf';
+    const size  = 7 + Math.random() * 10;
+    const dur   = 0.85 + Math.random() * 0.9;
+    const delay = Math.random() * 0.3;
+    const angle = Math.random() * 2 * Math.PI;
+    const dist  = 50 + Math.random() * 200;
+    const endX  = cx + Math.cos(angle) * dist;
+    const endY  = cy - (80 + Math.random() * 220);
+    const kfName = `cf${Date.now()}${i}`;
+    const style = document.createElement('style');
+    style.textContent = `@keyframes ${kfName}{0%{transform:translate(0,0) rotate(0deg) scale(1);opacity:1}85%{opacity:1}100%{transform:translate(${endX-cx}px,${endY-cy}px) rotate(${360+Math.random()*360}deg) scale(.3);opacity:0}}`;
+    document.head.appendChild(style);
+    c.style.cssText = `left:${cx}px;top:${cy}px;width:${size}px;height:${size}px;background:${CONF_COLORS[i%CONF_COLORS.length]};border-radius:${Math.random()>.5?'50%':'3px'};animation-name:${kfName};animation-duration:${dur}s;animation-delay:${delay}s;animation-fill-mode:forwards;`;
+    layer.appendChild(c);
+    setTimeout(() => { c.remove(); style.remove(); }, (dur + delay) * 1000 + 300);
+  }
+
+  // 2. yay text
+  const yay = document.createElement('div');
+  yay.className = 'yay-pop';
+  yay.textContent = YAY_WORDS[Math.floor(Math.random() * YAY_WORDS.length)];
+  yay.style.left = Math.min(Math.max(cx - 50, 10), window.innerWidth - 180) + 'px';
+  yay.style.top  = Math.max(cy - 70, 10) + 'px';
+  layer.appendChild(yay);
+  setTimeout(() => yay.remove(), 1600);
+
+  // 3. dancing cartoon characters
+  const count    = 3 + Math.floor(Math.random() * 2);
+  const shuffled = [...DANCERS].sort(() => Math.random() - 0.5).slice(0, count);
+  shuffled.forEach((svg, i) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'dancer';
+    wrap.style.left             = (window.innerWidth * 0.08 + Math.random() * window.innerWidth * 0.84) + 'px';
+    wrap.style.animationDelay    = (i * 0.22) + 's';
+    wrap.style.animationDuration = (2.8 + Math.random() * 0.5) + 's';
+    const blob = new Blob([svg], { type: 'image/svg+xml' });
+    const url  = URL.createObjectURL(blob);
+    const img  = new Image(80, 80);
+    img.src    = url;
+    img.style.display = 'block';
+    wrap.appendChild(img);
+    layer.appendChild(wrap);
+    setTimeout(() => { wrap.remove(); URL.revokeObjectURL(url); }, 3800 + i * 220);
+  });
+}
+
+/* ─── APP LOGIC ─── */
+const DEFAULT_PW = 'myspace';
+let currentFilter = 'all', selectedMood = '';
+
+function load(k, fb) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : fb; } catch { return fb; } }
+function save(k, v)  { localStorage.setItem(k, JSON.stringify(v)); }
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// Lock
+function tryUnlock() {
+  const pw = document.getElementById('pw-input').value;
+  if (pw === load('planner_pw', DEFAULT_PW)) {
+    document.getElementById('lock-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    document.getElementById('pw-hint').style.display = pw === DEFAULT_PW ? '' : 'none';
+    document.getElementById('header-date').textContent = new Date().toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+    renderTodos(); renderExams(); renderJournalEntries();
+    document.getElementById('journal-date').valueAsDate = new Date();
+  } else {
+    const e = document.getElementById('pw-error');
+    e.style.display = 'block';
+    document.getElementById('pw-input').value = '';
+    setTimeout(() => e.style.display = 'none', 2500);
+  }
+}
+document.getElementById('pw-input').addEventListener('keydown', e => { if (e.key === 'Enter') tryUnlock(); });
+function logout() { document.getElementById('app').style.display='none'; document.getElementById('lock-screen').style.display='flex'; document.getElementById('pw-input').value=''; }
+
+// Tabs
+function switchTab(n, btn) {
+  document.querySelectorAll('.section-card').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('sec-'+n).classList.add('active');
+  btn.classList.add('active');
+}
+
+// To-do
+function addTodo() {
+  const text = document.getElementById('todo-text').value.trim();
+  if (!text) return;
+  const todos = load('planner_todos', []);
+  todos.push({ id: Date.now(), text, priority: document.getElementById('todo-priority').value, done: false });
+  save('planner_todos', todos);
+  document.getElementById('todo-text').value = '';
+  renderTodos();
+}
+
+function toggleTodo(id, el) {
+  const todos = load('planner_todos', []);
+  const t = todos.find(t => t.id === id);
+  if (!t) return;
+  const completing = !t.done;
+  t.done = !t.done;
+  save('planner_todos', todos);
+  if (completing) {
+    const row = el ? el.closest('.todo-item') : null;
+    if (row) { row.classList.add('done-flash'); setTimeout(() => row.classList.remove('done-flash'), 500); }
+    celebrate(el);
+    setTimeout(renderTodos, 380);
+  } else {
+    renderTodos();
+  }
+}
+
+function deleteTodo(id) { save('planner_todos', load('planner_todos',[]).filter(t => t.id !== id)); renderTodos(); }
+function setFilter(f, btn) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTodos();
+}
+
+function renderTodos() {
+  const all      = load('planner_todos', []);
+  const filtered = all.filter(t => currentFilter==='all' ? true : currentFilter==='done' ? t.done : !t.done);
+  const list     = document.getElementById('todo-list');
+  const empty    = document.getElementById('todo-empty');
+  list.innerHTML = '';
+  if (!filtered.length) { empty.style.display = ''; return; }
+  empty.style.display = 'none';
+  filtered.forEach(t => {
+    const li = document.createElement('li');
+    li.className = 'todo-item' + (t.done ? ' done' : '');
+    const pc = {high:'p-high',med:'p-med',low:'p-low'}[t.priority] || 'p-med';
+    const pl = {high:'high',med:'medium',low:'low'}[t.priority] || 'medium';
+    li.innerHTML = `
+      <div class="todo-check" onclick="toggleTodo(${t.id},this)">${t.done ? '✓' : ''}</div>
+      <span class="todo-text">${esc(t.text)}</span>
+      <span class="priority-tag ${pc}">${pl}</span>
+      <button class="del-btn" onclick="deleteTodo(${t.id})">✕</button>`;
+    list.appendChild(li);
+  });
+}
+
+// Timetable
+const PCOLS = ['pill-0','pill-1','pill-2','pill-3','pill-4','pill-5'];
+const scmap = {}; let ci = 0;
+function gc(s) { const k=s.toLowerCase(); if (!scmap[k]) scmap[k]=PCOLS[ci++%PCOLS.length]; return scmap[k]; }
+
+function addExam() {
+  const s = document.getElementById('tt-subject').value.trim();
+  const d = document.getElementById('tt-date').value;
+  if (!s || !d) return;
+  const exams = load('planner_exams', []);
+  exams.push({ id:Date.now(), subject:s, date:d, time:document.getElementById('tt-time').value, venue:document.getElementById('tt-venue').value.trim() });
+  exams.sort((a,b) => a.date.localeCompare(b.date));
+  save('planner_exams', exams);
+  ['tt-subject','tt-date','tt-time','tt-venue'].forEach(id => document.getElementById(id).value = '');
+  renderExams();
+}
+
+function deleteExam(id) { save('planner_exams', load('planner_exams',[]).filter(e => e.id !== id)); renderExams(); }
+
+function renderExams() {
+  const exams = load('planner_exams', []);
+  const tbody = document.getElementById('tt-body');
+  const empty = document.getElementById('tt-empty');
+  tbody.innerHTML = '';
+  if (!exams.length) { empty.style.display = ''; return; }
+  empty.style.display = 'none';
+  exams.forEach(e => {
+    const tr = document.createElement('tr');
+    const df = e.date ? new Date(e.date+'T00:00:00').toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}) : '—';
+    const tf = e.time ? (h => `${h%12||12}:${e.time.split(':')[1]} ${h>=12?'pm':'am'}`)(+e.time.split(':')[0]) : '—';
+    tr.innerHTML = `<td><span class="subject-pill ${gc(e.subject)}">${esc(e.subject)}</span></td><td>${df}</td><td>${tf}</td><td>${esc(e.venue)||'—'}</td><td><button class="tt-del" onclick="deleteExam(${e.id})">✕</button></td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+// Journal
+function selectMood(btn) { document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected')); btn.classList.add('selected'); selectedMood = btn.dataset.mood; }
+
+function saveEntry() {
+  const text = document.getElementById('journal-text').value.trim();
+  if (!text) return;
+  const entries = load('planner_journal', []);
+  entries.unshift({ id:Date.now(), date:document.getElementById('journal-date').value, text, mood:selectedMood });
+  save('planner_journal', entries);
+  document.getElementById('journal-text').value = '';
+  document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+  selectedMood = '';
+  renderJournalEntries();
+}
+
+function deleteEntry(id) { save('planner_journal', load('planner_journal',[]).filter(e => e.id !== id)); renderJournalEntries(); }
+function clearJournal() { document.getElementById('journal-text').value=''; selectedMood=''; document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('selected')); }
+
+function renderJournalEntries() {
+  const entries   = load('planner_journal', []);
+  const container = document.getElementById('journal-entries');
+  container.innerHTML = '';
+  entries.forEach(e => {
+    const ds = e.date ? new Date(e.date+'T00:00:00').toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'}) : '';
+    const card = document.createElement('div');
+    card.className = 'journal-entry-card';
+    card.innerHTML = `
+      <button class="entry-del" onclick="deleteEntry(${e.id})">✕</button>
+      <div class="entry-header"><span class="entry-date-label">${ds}</span><span class="entry-mood-display">${e.mood||''}</span></div>
+      <div class="entry-text">${esc(e.text)}</div>`;
+    container.appendChild(card);
+  });
+}
+
+// Change password
+function openPwModal() {
+  document.getElementById('pw-modal').classList.add('open');
+  ['new-pw','confirm-pw'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('modal-error').style.display   = 'none';
+  document.getElementById('modal-success').style.display = 'none';
+}
+function closePwModal() { document.getElementById('pw-modal').classList.remove('open'); }
+function changePassword() {
+  const np = document.getElementById('new-pw').value;
+  const cp = document.getElementById('confirm-pw').value;
+  if (!np || np !== cp) { document.getElementById('modal-error').style.display = 'block'; return; }
+  document.getElementById('modal-error').style.display = 'none';
+  save('planner_pw', np);
+  document.getElementById('modal-success').style.display = 'block';
+  setTimeout(closePwModal, 1400);
+}
+document.getElementById('pw-modal').addEventListener('click', function(e) { if (e.target === this) closePwModal(); });
+</script>
+</body>
+</html>
